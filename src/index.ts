@@ -35,11 +35,11 @@ function encode(input: string): string {
  * @returns The original value before encoding `input`.
  */
 function decode(input: string) {
-  var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-  var output = "";
-  var chr1, chr2, chr3;
-  var enc1, enc2, enc3, enc4;
-  var i = 0;
+  const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+  let output = "";
+  let chr1, chr2, chr3;
+  let enc1, enc2, enc3, enc4;
+  let i = 0;
   const inp = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
   while (i < inp.length) {
     enc1 = keyStr.indexOf(inp.charAt(i++));

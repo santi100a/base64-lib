@@ -33,6 +33,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Publish to GPR
         run: |
+         cd for-gpr
          yarn publish --registry https://npm.pkg.github.com --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GPR_AUTH_TOKEN }}
