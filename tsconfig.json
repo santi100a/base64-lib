@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "target": "ES3",
+        "strict": true,
+        "noImplicitAny": true,
+        "outDir": "cjs/",
+        "declaration": true
+    },
+    "include": ["src/*.ts"],
+    "exclude": ["node_modules"]
+}
