@@ -25,8 +25,8 @@ jobs:
         run: yarn test
       - name: Set access tokens
         run: | 
-         npm set //registry.npmjs.org:_authToken ${{ secrets.NPM_AUTH_TOKEN }}
-         npm set //npm.pkg.github.com:_authToken ${{ secrets.GPR_AUTH_TOKEN }}
+         npm set //registry.npmjs.org/:_authToken ${{ secrets.NPM_AUTH_TOKEN }}
+         npm set //npm.pkg.github.com/:_authToken ${{ secrets.GPR_AUTH_TOKEN }}
       - name: Publish to NPM
         run: yarn publish
         env:
