@@ -59,6 +59,5 @@ function decode(input: string) {
   }
   return output;
 }
-
  
 export { encode, decode };
