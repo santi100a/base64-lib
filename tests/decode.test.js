@@ -1,10 +1,10 @@
-describe('encode function tests', () => {
+describe('decode function tests', () => {
     const decode = require('../cjs').decode;
     test('it\'s a valid function', () => {
         expect(typeof decode)
             .toBe('function');
     });
-    test('it can encode any string into a valid format', () => {
+    test('it can decode any string back to its original form', () => {
         expect(decode('aGVsbG8gYmVhcmVyIHRva2Vu'))
             .toBe('hello bearer token');
         expect(decode('VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw=='))

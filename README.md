@@ -28,7 +28,17 @@ Make sure you follow the [contribution Code of Conduct](https://github.com/santi
 - `function encode(input: string): string;` Encodes `input` to base64 format. It takes a string as an argument, and returns a base64 representation of `input`.
 - `function decode(input: string): string;` Decodes `input` back to its original form. Must be a valid base64 string. It takes a valid base64 string, and returns the decoded value of `input`.
 
-### Disclaimers
-**Hasn't been tested in an actual ES3 environment. Feel free to open an issue or pull request if you find any non-ES3 thing.*
+## My Goals
+The above functions must:
+1. Be able to handle strings that contain non-printable ASCII (the result of stringifying a buffer, for example).
+2. Be fully ES3 compliant (no ArrayBuffer, Uint8Array or anything like that).
+3. Use padding `=` signs.
+4. Be fully portable between the browser and Node.js (no reliance in any browser- or Node-exclusive API).
+5. Not modify the argument vector.
 
-*^The source code is about 3 kilobytes.*
+**If any of the above is not being satisfied, open a pull request or issue. I have no idea how to satisfy idea #3 reliably (see [disclaimers](#disclaimers)😀).**
+
+### Disclaimers
+- **Keep in mind this library can only reliably handle plaintext for now.**
+- **Hasn't been tested in an actual ES3 environment. Feel free to open an issue or pull request if you find any non-ES3 thing.*
+- *^The source code is about 3 kilobytes.*

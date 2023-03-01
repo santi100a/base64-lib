@@ -1,67 +1,80 @@
 "use strict";
 exports.__esModule = true;
 exports.decode = exports.encode = void 0;
+function map(array, fn) {
+    var newValues = [];
+    for (var index in array) {
+        newValues.push(fn(array[index], Number(index), array));
+    }
+    return newValues;
+}
+var URL_SAFE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+var STANDARD_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 /**
+ *
  * Encodes `input` to base64 format.
  * @param input A string.
+ * @param opts Encoding options. See {@link Base64Options} and {@link EncodeOptions}.
  * @returns A base64 representation of `input`.
+ * @see [Base64Options](Base64Options) for details on properties common to {@link encode} and {@link decode}.
+ * @see [EncodeOptions](EncodeOptions) for details on properties exclusive to {@link encode}.
  */
-function encode(input) {
+function encode(input, 
+/** @since 0.0.3 */
+opts) {
+    if (opts === void 0) { opts = {}; }
     if (typeof input !== 'string')
-        throw new TypeError("The \"input\" parameter must be a string. Received \"".concat(String(input), "\" of type \"").concat(typeof input, "\"."));
-    var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    var output = "";
-    var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        throw new TypeError();
+    var chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
+    var output = '';
+    var padding = '';
     var i = 0;
     while (i < input.length) {
-        chr1 = input.charCodeAt(i++);
-        chr2 = input.charCodeAt(i++);
-        chr3 = input.charCodeAt(i++);
-        enc1 = chr1 >> 2;
-        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-        enc4 = chr3 & 63;
-        if (isNaN(chr2)) {
-            enc3 = enc4 = 64;
-        }
-        else if (isNaN(chr3)) {
-            enc4 = 64;
-        }
-        output += keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
+        var byte1 = input.charCodeAt(i++) & 0xff;
+        var byte2 = input.charCodeAt(i++) & 0xff;
+        var byte3 = input.charCodeAt(i++) & 0xff;
+        var group = (byte1 << 16) | (byte2 << 8) | byte3;
+        output +=
+            chars[(group >> 18) & 0x3f] +
+                chars[(group >> 12) & 0x3f] +
+                (byte2 ? chars[(group >> 6) & 0x3f] : '=') +
+                (byte3 ? chars[group & 0x3f] : '=');
     }
-    return output;
+    var mod = output.length % 4;
+    if (mod) {
+        padding = '===='.substring(mod);
+    }
+    return output + padding;
 }
 exports.encode = encode;
 /**
- * Decodes `input` back to its original form. Must be a valid base64 string.
+ * Decodes `input` back to its original form.
  * @param input A valid base64 string.
- * @returns The original value before encoding `input`.
+ * @param opts Decoding options. See {@link Base64Options} and {@link DecodeOptions}.
+ * @returns The result of decoding `input`.
+ * @see [Base64Options](Base64Options) for details on properties common to {@link encode} and {@link decode}.
+ * @see [EncodeOptions](DecodeOptions) for details on properties exclusive to {@link decode}.
  */
-function decode(input) {
-    var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    var output = "";
-    var chr1, chr2, chr3;
-    var enc1, enc2, enc3, enc4;
-    var i = 0;
-    var inp = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-    while (i < inp.length) {
-        enc1 = keyStr.indexOf(inp.charAt(i++));
-        enc2 = keyStr.indexOf(inp.charAt(i++));
-        enc3 = keyStr.indexOf(inp.charAt(i++));
-        enc4 = keyStr.indexOf(inp.charAt(i++));
-        chr1 = (enc1 << 2) | (enc2 >> 4);
-        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-        chr3 = ((enc3 & 3) << 6) | enc4;
-        if (enc3 == 64) {
-            output += String.fromCharCode(chr1);
-        }
-        else if (enc4 == 64) {
-            output += String.fromCharCode(chr1, chr2);
-        }
-        else {
-            output += String.fromCharCode(chr1, chr2, chr3);
-        }
-    }
-    return output;
+function decode(input, 
+/** @since 0.0.3 */
+opts) {
+    if (opts === void 0) { opts = {}; }
+    // Get the character set to use for decoding
+    var chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
+    // Remove any padding characters from the input string
+    input = input.replace(/=+$/, '');
+    // Split the input string into chunks of 6 bits
+    var chunks = map(input.split(''), function (char) {
+        var index = chars.indexOf(char);
+        return index >= 0 ? index.toString(2).padStart(6, '0') : '';
+    });
+    // Combine the chunks into a single binary string
+    var binary = chunks.join('');
+    // Split the binary string into chunks of 8 bits
+    var bytes = binary.match(/.{8}/g) || [];
+    // Convert each byte to its corresponding character
+    var characters = map(bytes, function (byte) { return String.fromCharCode(parseInt(byte, 2)); });
+    // Join the characters to form the final string
+    return characters.join('');
 }
 exports.decode = decode;
