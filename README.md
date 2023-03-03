@@ -36,7 +36,7 @@ The above functions must:
 4. Be fully portable between the browser and Node.js (no reliance in any browser- or Node-exclusive API).
 5. Not modify the argument vector.
 
-**If any of the above is not being satisfied, open a pull request or issue. I have no idea how to satisfy idea #1 reliably (see [disclaimers](#disclaimers)😀).**
+**If any of the above is not being satisfied, open a pull request or issue. I have no idea how to satisfy idea #1 reliably (see [Contribute](CONTRIBUTE.md) (for instructions) and [disclaimers](#disclaimers)😀).**
 
 ### Disclaimers
 - **Keep in mind this library can only reliably handle plaintext for now.**

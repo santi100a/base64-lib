@@ -1,3 +1,4 @@
+/// <reference types="node" />
 interface Base64Options {
     /**
      * Whether or not to use a URL-safe charset.
@@ -18,18 +19,14 @@ interface DecodeOptions extends Base64Options {
  * @see [Base64Options](Base64Options) for details on properties common to {@link encode} and {@link decode}.
  * @see [EncodeOptions](EncodeOptions) for details on properties exclusive to {@link encode}.
  */
-declare function encode(input: string, 
-/** @since 0.0.3 */
-opts?: EncodeOptions): string;
+declare function encode(input: Buffer | string, opts?: EncodeOptions): string;
 /**
  * Decodes `input` back to its original form.
  * @param input A valid base64 string.
  * @param opts Decoding options. See {@link Base64Options} and {@link DecodeOptions}.
  * @returns The result of decoding `input`.
  * @see [Base64Options](Base64Options) for details on properties common to {@link encode} and {@link decode}.
- * @see [EncodeOptions](DecodeOptions) for details on properties exclusive to {@link decode}.
+ * @see [DecodeOptions](DecodeOptions) for details on properties exclusive to {@link decode}.
  */
-declare function decode(input: string, 
-/** @since 0.0.3 */
-opts?: EncodeOptions): string;
+declare function decode(input: string | Buffer, opts?: EncodeOptions): string;
 export { encode, decode, Base64Options, DecodeOptions, EncodeOptions };

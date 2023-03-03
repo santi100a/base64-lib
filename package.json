@@ -1,7 +1,9 @@
 {
   "name": "@santi100/base64-lib",
-  "version": "0.0.3",
-  "main": "index.js",
+  "version": "0.0.4",
+  "main": "cjs/index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^29.4.0",
@@ -10,19 +12,32 @@
   },
   "description": "Santi's Base64 Library: A lightweight, portable, ES3-compliant Base64 library!",
   "keywords": [
-    "base64", "lightweight", "portable", "es3"
+    "base64",
+    "lightweight",
+    "portable",
+    "es3"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/santi100a/base64-lib"
   },
   "type": "module",
-  "typings": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./cjs/index.d.ts",
+      "import": "./index.js",
+      "require": "./cjs/index.js"
+    },
+    "./cjs": {
+      "types": "./cjs/index.d.ts",
+      "import": "./cjs/index.js",
+      "require": "./cjs/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "test": "jest",
     "dev": "tsc -w",
-
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage"
   }
