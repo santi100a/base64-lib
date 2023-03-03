@@ -110,7 +110,10 @@ function decode(input: string | Buffer, opts: EncodeOptions = {}) {
 	const chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
 
 	// Remove any padding characters from the input string
-	const inp = (typeof Buffer === 'undefined' ? String(input) : Buffer.from(input).toString()).replace(/=+$/, '');
+	
+	const rawInp = (typeof Buffer === 'undefined' ? String(input) : Buffer.from(input).toString());
+	const lastEqualIndex = rawInp.lastIndexOf('='); 
+	const inp = lastEqualIndex !== -1 ? rawInp.substring(0, lastEqualIndex) : rawInp;
 
 	// Split the input string into chunks of 6 bits
 	const chunks = map(inp.split(''), (char) => {
@@ -136,7 +139,7 @@ function decode(input: string | Buffer, opts: EncodeOptions = {}) {
 // The above functions must:
 // 1. Be able to handle strings that contain non-printable ASCII (the result of stringifying a
 // buffer, for example).
-// 2. Be fully ES3 compliant (no ArrayBuffer, Uint8Array or anything like that).
+// 2. Be fully ES3 compliant.
 // 3. Use padding '=' signs.
 // 4. Be fully portable between the browser and Node.js (no reliance in any browser- or Node-exclusive
 // API).

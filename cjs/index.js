@@ -93,7 +93,9 @@ function decode(input, opts) {
     // Get the character set to use for decoding
     var chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
     // Remove any padding characters from the input string
-    var inp = (typeof Buffer === 'undefined' ? String(input) : Buffer.from(input).toString()).replace(/=+$/, '');
+    var rawInp = (typeof Buffer === 'undefined' ? String(input) : Buffer.from(input).toString());
+    var lastEqualIndex = rawInp.lastIndexOf('=');
+    var inp = lastEqualIndex !== -1 ? rawInp.substring(0, lastEqualIndex) : rawInp;
     // Split the input string into chunks of 6 bits
     var chunks = map(inp.split(''), function (char) {
         var index = chars.indexOf(char);
