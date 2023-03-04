@@ -13,7 +13,7 @@
 
 ## What's this?
 This is a lightweight, fast library for encoding and decoding strings in base64 format.
-It's portable between the browser and Node.js. In order to keep backwards compatibility with old browsers, this library can only encode and decode strings. This serves as a lighweight, portable replacement for the `btoa` and `atob` functions, and provides clearer names. 
+It's portable between the browser and Node.js. In order to keep backwards compatibility with old browsers, this library can only encode and decode strings. This serves as a lightweight, portable replacement for the `btoa` and `atob` functions, and provides clearer names. 
 
 ## Contribute
 
