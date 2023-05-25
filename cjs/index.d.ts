@@ -10,6 +10,11 @@ interface EncodeOptions extends Base64Options {
 }
 interface DecodeOptions extends Base64Options {
 }
+export declare function createCoder(opts?: Base64Options): {
+    readonly opts: Base64Options;
+    encode(input: string | Buffer): string;
+    decode(input: string | Buffer): string;
+};
 /**
  *
  * Encodes `input` to base64 format.

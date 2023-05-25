@@ -1,5 +1,5 @@
 node_modules
+*.exe
+ignore-*.*
 *.log
-/**/*.exe
-*.ignore*.*
-.*rc
+coverage

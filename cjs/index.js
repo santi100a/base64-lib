@@ -1,8 +1,9 @@
 "use strict";
 exports.__esModule = true;
-exports.decode = exports.encode = void 0;
-function createCoder() {
-    return new /** @class */ (function () {
+exports.decode = exports.encode = exports.createCoder = void 0;
+function createCoder(opts) {
+    if (opts === void 0) { opts = {}; }
+    return new (/** @class */ (function () {
         function Coder(opts) {
             if (opts === void 0) { opts = {}; }
             this.opts = opts;
@@ -14,8 +15,9 @@ function createCoder() {
             return decode(input, this.opts);
         };
         return Coder;
-    }());
+    }()))(opts);
 }
+exports.createCoder = createCoder;
 function map(array, fn) {
     var newValues = [];
     for (var _i = 0, array_1 = array; _i < array_1.length; _i++) {
@@ -48,14 +50,14 @@ function encode(input, opts) {
     function isBufferOrString(input) {
         if (typeof input === 'string')
             return true;
-        // @ts-expect-error
+        // @ts-expect-error The Buffer class might not exist.
         if (input instanceof Buff)
             return true;
         return false;
     }
     if (!isBufferOrString(input))
         throw new TypeError("\"input\" must be a string. Got \"".concat(String(input), "\" of type \"").concat(typeof input, "\"."));
-    // @ts-expect-error
+    // @ts-expect-error The Buffer class might not exist.
     var isBuffer = function (input) { return input instanceof Buff; };
     var chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
     var output = '';
@@ -93,7 +95,9 @@ function decode(input, opts) {
     // Get the character set to use for decoding
     var chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
     // Remove any padding characters from the input string
-    var rawInp = (typeof Buffer === 'undefined' ? String(input) : Buffer.from(input).toString());
+    var rawInp = typeof Buffer === 'undefined'
+        ? String(input)
+        : Buffer.from(input).toString();
     var lastEqualIndex = rawInp.lastIndexOf('=');
     var inp = lastEqualIndex !== -1 ? rawInp.substring(0, lastEqualIndex) : rawInp;
     // Split the input string into chunks of 6 bits

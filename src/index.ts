@@ -5,16 +5,18 @@ interface Base64Options {
 	 */
 	urlSafe?: boolean;
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface EncodeOptions extends Base64Options {
 	// Insert any property here
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface DecodeOptions extends Base64Options {
 	// Insert any property here
 }
 
-function createCoder() {
-	return new class Coder {
-		private readonly opts: Base64Options;
+export function createCoder(opts: Base64Options = {}) {
+	return new (class Coder {
+		readonly opts: Base64Options;
 		constructor(opts: Base64Options = {}) {
 			this.opts = opts;
 		}
@@ -24,7 +26,7 @@ function createCoder() {
 		decode(input: string | Buffer) {
 			return decode(input, this.opts);
 		}
-	};
+	})(opts);
 }
 
 function map<T, R = unknown>(
@@ -61,25 +63,27 @@ for (let i = 0; i < STANDARD_CHARS.length; i++) {
  */
 function encode(input: Buffer | string, opts: EncodeOptions = {}) {
 	const Buff = typeof Buffer === 'undefined' ? null : Buffer;
-	function isBufferOrString(input: any) {
+	function isBufferOrString(input: unknown) {
 		if (typeof input === 'string') return true;
-		// @ts-expect-error
+		// @ts-expect-error The Buffer class might not exist.
 		if (input instanceof Buff) return true;
 
 		return false;
 	}
-	if (!isBufferOrString(input)) 
+	if (!isBufferOrString(input))
 		throw new TypeError(
-			`"input" must be a string. Got "${String(input)}" of type "${typeof input}".`
+			`"input" must be a string. Got "${String(
+				input
+			)}" of type "${typeof input}".`
 		);
-	// @ts-expect-error
-	const isBuffer = (input: any) => input instanceof Buff;
+	// @ts-expect-error The Buffer class might not exist.
+	const isBuffer = (input: unknown) => input instanceof Buff;
 	const chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
 	let output = '';
 	let padding = '';
 	const inp = isBuffer(input) ? input.toString() : String(input);
 	let i = 0;
-	while (i < inp.length) { 
+	while (i < inp.length) {
 		const byte1 = inp.charCodeAt(i++) & 0xff;
 		const byte2 = inp.charCodeAt(i++) & 0xff;
 		const byte3 = inp.charCodeAt(i++) & 0xff;
@@ -110,10 +114,14 @@ function decode(input: string | Buffer, opts: EncodeOptions = {}) {
 	const chars = opts.urlSafe ? URL_SAFE_CHARS : STANDARD_CHARS;
 
 	// Remove any padding characters from the input string
-	
-	const rawInp = (typeof Buffer === 'undefined' ? String(input) : Buffer.from(input).toString());
-	const lastEqualIndex = rawInp.lastIndexOf('='); 
-	const inp = lastEqualIndex !== -1 ? rawInp.substring(0, lastEqualIndex) : rawInp;
+
+	const rawInp =
+		typeof Buffer === 'undefined'
+			? String(input)
+			: Buffer.from(input).toString();
+	const lastEqualIndex = rawInp.lastIndexOf('=');
+	const inp =
+		lastEqualIndex !== -1 ? rawInp.substring(0, lastEqualIndex) : rawInp;
 
 	// Split the input string into chunks of 6 bits
 	const chunks = map(inp.split(''), (char) => {
@@ -125,7 +133,7 @@ function decode(input: string | Buffer, opts: EncodeOptions = {}) {
 	const binary = chunks.join('');
 
 	// Split the binary string into chunks of 8 bits
-	const bytes = binary.match(/.{8}/g) || []; 
+	const bytes = binary.match(/.{8}/g) || [];
 
 	// Convert each byte to its corresponding character
 	const characters = map(bytes, (byte) =>
